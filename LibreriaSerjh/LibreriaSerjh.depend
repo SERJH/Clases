@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1493408385 source:c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\ejercicios\libreriaserjh\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funcionesSM.h"
+
+1493408292 source:c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\ejercicios\libreriaserjh\funcionessm.c
+	"funcionesSM.h"
+
+1493718311 c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\ejercicios\libreriaserjh\funcionessm.h
+
