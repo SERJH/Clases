@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1493731746 source:c:\users\alumno\desktop\parcial_1_santiagomoran\estacionamiento.c
+	<stdio.h>
+	<conio.h>
+	<string.h>
+	"Estacionamiento.h"
+
+1493731322 c:\users\alumno\desktop\parcial_1_santiagomoran\estacionamiento.h
+
+1493731498 source:c:\users\alumno\desktop\parcial_1_santiagomoran\main.c
+	<stdio.h>
+	<stdlib.h>
+	<conio.h>
+	<ctype.h>
+	<string.h>
+	"Estacionamiento.h"
+
+1495440868 source:c:\users\serjh\desktop\clases-master\moran santiago\estacionamiento.c
+	<stdio.h>
+	<conio.h>
+	<ctype.h>
+	<string.h>
+	"Estacionamiento.h"
+
+1495440706 c:\users\serjh\desktop\clases-master\moran santiago\estacionamiento.h
+
+1495440857 source:c:\users\serjh\desktop\clases-master\moran santiago\main.c
+	<stdio.h>
+	<stdlib.h>
+	<conio.h>
+	<ctype.h>
+	<string.h>
+	"Estacionamiento.h"
+
