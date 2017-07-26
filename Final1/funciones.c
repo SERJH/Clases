@@ -281,12 +281,12 @@ S_Service* nuevoServiceParam(int id, char nombre[], char mail[]) {
 
 void parseoLogs(ArrayList* logs) {
 
-    int i, auxServiceId, auxGravedad;
-    char auxFecha[11], auxHora[6], auxMsg[65];
+    int i;
+    char auxFecha[11], auxHora[6], auxServiceId[3], auxGravedad[2], auxMsg[65];
     S_LogEntry* auxLog;
     FILE* aLog;
 
-    if (aLog = (fopen("log.txt", "r")) == NULL) {
+    if ((aLog = (fopen("log.txt", "r"))) == NULL) {
 
         printf("\nEl archivo log.txt no puede ser abierto.");
         exit(0);
@@ -295,8 +295,8 @@ void parseoLogs(ArrayList* logs) {
 
         while (!feof(aLog)) {
 
-            fscanf(aLog, "%[^;], %[^;], %[^;], %[^;], %[^\n]\n", auxFecha, auxHora, auxServiceId, auxGravedad, auxMsg);
-            auxLog = nuevoLogParam(auxFecha, auxHora, auxServiceId, auxGravedad, auxMsg);
+            fscanf(aLog, "%[^;];%[^;];%[^;];%[^;];%[^\n]\n", auxFecha, auxHora, auxServiceId, auxGravedad, auxMsg);
+            auxLog = nuevoLogParam(auxFecha, auxHora, atoi(auxServiceId), atoi(auxGravedad), auxMsg);
             logs->add(logs, auxLog);
 
         }
@@ -313,7 +313,7 @@ void parseoServices(ArrayList* services) {
     S_Service* auxService;
     FILE* aService;
 
-    if (aService = (fopen("services.txt", "r")) == NULL) {
+    if ((aService = (fopen("services.txt", "r"))) == NULL) {
 
         printf("\nEl archivo services.txt no puede ser abierto.");
         exit(0);
@@ -322,7 +322,7 @@ void parseoServices(ArrayList* services) {
 
         while (!feof(aService)) {
 
-            fscanf(aService, "%[^;]; %[^;]; %[^\n]\n", auxId, auxNombre, auxMail);
+            fscanf(aService, "%[^;];%[^;];%[^\n]\n", auxId, auxNombre, auxMail);
             auxService = nuevoServiceParam(atoi(auxId), auxNombre, auxMail);
             services->add(services, auxService);
 
@@ -356,12 +356,14 @@ void procesarInfo(ArrayList* logs, ArrayList* services) {
     int i, auxId, indexS;
     int tamLogs = al_len(logs);
     int tamServices = al_len(services);
+    S_LogEntry* auxLog;
+    S_Service* auxService;
     FILE* warnings;
     FILE* errors;
 
-    if (warnings = (fopen("warnings.txt", "r+")) == NULL) {
+    if ((warnings = (fopen("warnings.txt", "r+"))) == NULL) {
 
-        if (warnings = (fopen("warnings.txt", "w+")) == NULL) {
+        if ((warnings = (fopen("warnings.txt", "w+"))) == NULL) {
 
             printf("\El archivo warnings.txt no pudo ser abierto.");
             exit(0);
@@ -374,9 +376,9 @@ void procesarInfo(ArrayList* logs, ArrayList* services) {
 
     }
 
-    if (errors = (fopen("errors.txt", "r+")) == NULL) {
+    if ((errors = (fopen("errors.txt", "r+"))) == NULL) {
 
-        if (errors = (fopen("errors.txt", "w+")) == NULL) {
+        if ((errors = (fopen("errors.txt", "w+"))) == NULL) {
 
             printf("\El archivo errors.txt no pudo ser abierto.");
             exit(0);
@@ -391,15 +393,145 @@ void procesarInfo(ArrayList* logs, ArrayList* services) {
 
     for (i = 0; i < tamLogs; i++) {
 
-        if (((S_LogEntry*)logs->pElements[i])->gravedad == 3) {
+        auxLog = (S_LogEntry*)logs->pElements[i];
 
-            auxId = ((S_LogEntry*)logs->pElements[i])->serviceId;
+        if (auxLog->gravedad == 3 && auxLog->serviceId != 45) {
+
+            auxId = auxLog->serviceId;
             indexS = getServiceById(services, auxId);
+            auxService = (S_Service*)services->pElements[indexS];
 
+            fprintf(warnings, "%s;%s;%s;%s;%s\n", auxLog->date, auxLog->time, auxService->name, auxLog->msg, auxService->email);
+
+        }
+
+        if (auxLog->gravedad >= 4 && auxLog->gravedad <= 7) {
+
+            auxId = auxLog->serviceId;
+            indexS = getServiceById(services, auxId);
+            auxService = (S_Service*)services->pElements[indexS];
+
+            printf("\n%s;%s;%s;%s;%i", auxLog->date, auxLog->time, auxService->name, auxLog->msg, auxLog->gravedad);
+
+        }
+
+        if (auxLog->gravedad > 7) {
+
+            auxId = auxLog->serviceId;
+            indexS = getServiceById(services, auxId);
+            auxService = (S_Service*)services->pElements[indexS];
+
+            fprintf(errors, "%s;%s;%s;%s;%s\n", auxLog->date, auxLog->time, auxService->name, auxLog->msg, auxService->email);
 
         }
 
     }
+
+    fclose(warnings);
+    fclose(errors);
+}
+
+int masFallos(ArrayList* logs, ArrayList* services) {
+
+    int i, j;
+    int auxId;
+    int masFallos;
+    int cantMasFallos;
+    int cantidad = 0;
+    int flag = 0;
+    int lenL = al_len(logs);
+    int lenS = al_len(services);
+    S_LogEntry* auxLog;
+
+    for (i = 0; i < lenS; i++) {
+
+        auxId = ((S_Service*)services->pElements[i])->id;
+
+        for (j = 0; j < lenL; j++) {
+
+            auxLog = (S_LogEntry*)logs->pElements[j];
+
+            if (auxLog->serviceId == auxId) {
+
+                cantidad++;
+
+            }
+
+        }
+
+        if (!flag) {
+
+            masFallos = auxId;
+            cantMasFallos = cantidad;
+            flag = 1;
+
+        } else {
+
+            if (cantidad > cantMasFallos) {
+
+                masFallos = auxId;
+                cantMasFallos = cantidad;
+
+            }
+
+        }
+
+        cantidad = 0;
+    }
+
+    return masFallos;
+}
+
+void cantidadFallos(ArrayList* logs, ArrayList* services) {
+
+    int i;
+    int tamL = al_len(logs);
+    int idMasFallos = masFallos(logs, services);
+    int index = getServiceById(services, idMasFallos);
+    S_Service* auxService = (S_Service*)services->pElements[index];
+    S_LogEntry* auxLog;
+    int id = auxService->id;
+    int menor3 = 0;
+    int igual3 = 0;
+    int entre4y7 = 0;
+    int mayor7 = 0;
+
+    printf("\nEl servicio con mas fallos ha sido %s", auxService->name);
+
+    for (i = 0; i < tamL; i++) {
+
+        auxLog = (S_LogEntry*)logs->pElements[i];
+
+        if (auxLog->serviceId == id) {
+
+            if (auxLog->gravedad < 3) {
+
+                menor3++;
+
+            } else if (auxLog->gravedad == 3) {
+
+                igual3++;
+
+            } else if (auxLog->gravedad >= 4 && auxLog->gravedad <= 7) {
+
+                entre4y7++;
+
+            } else {
+
+                mayor7++;
+
+            }
+
+        }
+
+    }
+
+    printf("\nCantidad de fallos segun valor de gravedad:\n");
+
+    printf("\nMenor a 3: %i", menor3);
+    printf("\nIgual a 3: %i", igual3);
+    printf("\nEntre 4 y 7 (inclusive): %i", entre4y7);
+    printf("\nMayor a 7: %i\n", mayor7);
 
 }
 

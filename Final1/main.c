@@ -25,27 +25,21 @@ int main()
         {
             case 1:
 
-                //parseoLogs(logs);
+                parseoLogs(logs);
                 parseoServices(services);
                 break;
 
             case 2:
 
+                procesarInfo(logs, services);
                 break;
 
             case 3:
 
+                cantidadFallos(logs, services);
                 break;
 
             case 4:
-
-                break;
-
-            case 5:
-
-                break;
-
-            case 6:
 
                 seguir = 0;
                 break;
