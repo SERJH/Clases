@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1501049288 source:c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\final2\arraylist.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"ArrayList.h"
+
+1501049301 c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\final2\arraylist.h
+
+1501055684 source:c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\final2\funciones.c
+	<stdlib.h>
+	<string.h>
+	"funciones.h"
+	"ArrayList.h"
+
+1501050043 c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\final2\funciones.h
+	<stdlib.h>
+	<stdio.h>
+	"ArrayList.h"
+
+1501055701 source:c:\users\serjh\desktop\programacion\utn\tecnicatura en programacion\programacion 1 - lab 1\final2\main.c
+	<stdio.h>
+	<stdlib.h>
+	"funciones.h"
+
